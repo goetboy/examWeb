@@ -1,23 +1,61 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
-import Article from '@/components/Article'
+import auth from '@/utils/auth'
+import Layout from '@/components/Layout'
+import Root from '@/modules/Root'
+import notFound from './routes/notFound'
+import home from './routes/home'
+import articles from './routes/articles'
+import login from './routes/login'
+import logout from './routes/logout'
+import iView from 'iview'
+
 Vue.use(Router)
 
- const router = new Router({
-  linkActiveClass: 'active',
-  hashbang: true, // 将路径格式化为#!开头
-  history: true, // 启用HTML5 history模式，可以使用pushState和replaceState来管理记录
+const router = new Router({
   routes: [
-    
     {
-      path: '/helloWorld',
-      component: HelloWorld
-    },
-    {
-      path:"/article",
-      component:Article
+      path: '/',
+      component: Root,
+      children: [
+        {
+          path: '/',
+          component: Layout,
+          children: [
+            home,
+            articles
+          ],
+          meta: {
+            requiresAuth: true
+          }
+        },
+        login,
+        logout,
+        notFound
+      ]
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  iView.LoadingBar.start()
+
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (!auth.loggedIn()) {
+      next({
+        path: 'login',
+        query: {redirect: to.fullPath}
+      })
+    } else {
+      next()
+    }
+  } else {
+    next()
+  }
+})
+
+router.afterEach((to, from, next) => {
+  iView.LoadingBar.finish()
+})
+
 export default router

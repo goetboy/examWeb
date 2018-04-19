@@ -3,13 +3,21 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import './style/public.css'
+import '@/utils/init'
+import store from '@/store'
+import iView from 'iview'
+import '@/styles/global/index.scss'
+import '@/styles/iview/index.less'
+
 Vue.config.productionTip = false
+
+Vue.use(iView)
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  store,
   router,
-  components: { App },
-  template: '<App/>'
+  template: '<App/>',
+  components: {App}
 })
