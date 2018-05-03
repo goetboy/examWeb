@@ -1,7 +1,9 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
+   <router-link to="/login">登陆/注册</router-link>
+
     <router-view/>
+
   </div>
 </template>
 
