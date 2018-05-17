@@ -3,7 +3,7 @@
     <div class="layout">
         <Layout :style="{minHeight: '100vh'}">
             <Sider collapsible :collapsed-width="78" v-model="isCollapsed">
-                <Menu active-name="1-2" theme="dark" width="auto" :class="menuitemClasses">
+                <Menu active-name="1-2" theme="dark" width="auto" :class="menuitemClasses"   @on-select="print">
                     <Submenu name="1">
                                     <template slot="title">
                                         <Icon type="ios-navigate"></Icon>
@@ -21,12 +21,12 @@
                                     <!-- <MenuItem name="2-1">Option 1</MenuItem>
                                     <MenuItem name="2-2">Option 2</MenuItem> -->
                                 </Submenu>
-                                <Submenu name="3">
+                                <Submenu name="3"  >
                                     <template slot="title">
                                         <Icon type="ios-analytics"></Icon>
                                        系统管理
                                     </template>
-                                    <MenuItem name="1-1"  ><button href="#"  v-on:click="print">菜单管理</button></MenuItem>
+                                    <MenuItem name="1-1"  >菜单管理</MenuItem>
                                 </Submenu>
                 </Menu>
             </Sider>
@@ -94,7 +94,6 @@ import axios from "../../assets/js/util/http";
                 // ]
             }
         },methods:{
-            
             getMenu(url){
                 console.log(url);
                 this.$router.push(url);
