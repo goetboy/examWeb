@@ -6,7 +6,7 @@ export function setCookie(c_name,value,expire){
   console.log(document.cookie);
 }
 export function getCookie(c_name){
-  id(document.cookie.length>0)
+  if(document.cookie.length>0)
 {
   let c_start = document.cookie.indexOf(c_name+"=");
   if(c_start!=-1){

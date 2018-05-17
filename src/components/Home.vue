@@ -1,31 +1,46 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
+      <div>
+        <h3>欢迎:{{username}}</h3>
+        <a href="#" @click="quit">注销登陆</a>
+      </div>
+    <router-view/>
+ 
+
   </div>
 </template>
 
 <script>
 import { setCookie, getCookie, delCookie } from "../assets/js/cookie.js";
+import Head from "../components/Head";
 export default {
   name: "Home",
   data() {
     return {
-      msg: "我的第一个项目"
+     
     };
+  },
+  comments:{
+     
   },
   mounted() {
     /*页面挂载获取保存的cookie值，渲染到页面上*/
-    let uname = getCookie("username");
-    this.name = uname;
+    let user = getCookie("username");
+    console.log(user);
+    this.username = user;
     /*如果cookie不存在，则跳转到登录页*/
-    if (uname == "") {
-      this.$router.push("/");
+    if (user== "") {
+      console.log('/')
+      this.$router.push("/login");
+    }else{
+      this.$router.push("/admin/index");
     }
   },
   methods: {
     quit() {
       /*删除cookie*/
-      delCookie("username");
+      delCookie("user");
+      
     }
   }
 };

@@ -1,9 +1,7 @@
 <template>
   <div id="app">
-   <router-link to="/login">登陆/注册</router-link>
-
+   <!-- <router-link to="/login">登陆/注册</router-link> -->
     <router-view/>
-
   </div>
 </template>
 
