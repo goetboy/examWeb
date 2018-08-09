@@ -1,7 +1,7 @@
 <template>
   <div class="hello">
       <div>
-        <h3>欢迎:{{username}}</h3>
+        <h3>欢迎:{{user.username}}</h3>
         <a href="#" @click="quit">注销登陆</a>
       </div>
     <router-view/>
@@ -12,11 +12,11 @@
 
 <script>
 import { setCookie, getCookie, delCookie } from "../assets/js/cookie.js";
-import Head from "../components/Head";
 export default {
   name: "Home",
   data() {
     return {
+      user:{username,password}
      
     };
   },
