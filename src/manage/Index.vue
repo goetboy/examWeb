@@ -43,23 +43,6 @@
           .get(
             "http://127.0.0.1/menu/list"
 
-            // headers: {
-            //     "Content-Type": "application/x-www-form-urlencoded"
-            //   },
-            //   transformRequest: [
-            //     function(data) {
-            //       // Do whatever you want to transform the data
-            //       let ret = "";
-            //       for (let it in data) {
-            //         ret +=
-            //           encodeURIComponent(it) +
-            //           "=" +
-            //           encodeURIComponent(data[it]) +
-            //           "&";
-            //       }
-            //       return ret;
-            //     }
-            //   ],
           )
           .then(res => {
             console.log(res.data);

@@ -1,6 +1,7 @@
 <template>
 <!-- 登陆/注册页面，可以实现用户的登陆和注册 -->
 <el-form :rules="userRoules" ref="login"  :model="login" class="from">
+  <div>
         <h3>登陆</h3>
         <el-form-item label="用户名"  prop="username" >
           <el-input  v-model="login.username" placeholder="请输入用户名" />
@@ -8,10 +9,12 @@
         <el-form-item  label="密码" prop="password">
           <el-input  type="password" v-model="login.password" placeholder="请输入密码" />
         </el-form-item>
+  </div>
         <el-form-item>
           <!-- 按钮 类型  单击事件 键盘事件 -->
           <el-button type="primary" v-on:click="loSubmit('login')"  @keydown.enter="loSubmit('login')"  >登陆</el-button><span >没有账号？
-          <a href="#">马上注册</a></span>
+        <router-link to="/regedit">马上注册</router-link>
+        </span>
         </el-form-item>
     </el-form>
 
@@ -54,7 +57,6 @@ export default {
     loSubmit(name) {
       this.$refs[name].validate(valid => {
         if (valid) {
-          alert("submit!");
           this.$router.push("/admin/index");
         } else {
           console.log("error submit!!");

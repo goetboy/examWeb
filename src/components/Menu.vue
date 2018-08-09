@@ -1,7 +1,7 @@
 <template>
   <div>
     <label v-if="navmenus" v-for="item in navmenus">
-      <el-menu-item  :index="item.name" v-if="!item.child" :route="item.url">
+      <el-menu-item  :index="item.name" v-if="!item.child" :route="item.url?item.url:'#'">
         {{item.name}}
       </el-menu-item>
       <el-submenu :key="item.id" :index="item.name" v-if="item.child" >
