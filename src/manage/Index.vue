@@ -1,18 +1,17 @@
 <template>
   <el-container>
-    <el-aside style="height: 500px;">
-      <el-menu router="true">
-        <navmenu :navmenus="menuList"></navmenu>
-      </el-menu>
-    </el-aside>
+    <el-header>{{title}}</el-header>
     <el-container>
-      <el-header>{{title}}</el-header>
-<el-main>
-  <router-view></router-view>
-</el-main>
+      <el-aside width="200px">  <el-menu router="true">
+        <navmenu :navmenus="menuList"></navmenu>
+      </el-menu></el-aside>
+      <el-main >
+
+        <router-view></router-view>
+
+      </el-main>
     </el-container>
   </el-container>
-
 </template>
 <script>
   import axios from "../assets/js/util/http";
@@ -93,7 +92,6 @@
     background-color: #e9eef3;
     color: #333;
     text-align: center;
-    line-height: 160px;
   }
   .el-menu{
     background-color: #e9eef3;

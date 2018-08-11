@@ -6,6 +6,7 @@ import Regedit from '@/login/Regedit';
 import AdminIndex from '@/manage/Index';
 import UserList from  '@/manage/admin/user/List'
 import UserInfo from  '@/manage/admin/user/Info'
+import Modify from  '@/manage/admin/user/Modify'
 Vue.use(Router)
 
 
@@ -38,9 +39,14 @@ export default new Router({
         component:UserList
       },
       {
-        path:'/admin/user/:id',
+        path:'/admin/user/',
         name:UserInfo,
         component:UserInfo
+      },
+      {
+        path:'/admin/user/update',
+        name:Modify,
+        component:Modify
       }
     ]
 
