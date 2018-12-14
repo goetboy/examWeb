@@ -12,10 +12,8 @@
                     </el-input>
                 </el-form-item>
             </el-form>
-            <el-button type="primary" @click="showAddForm" size="small">添加用户</el-button>
             <el-button type="primary" @click="showUpdateForm" size="small">修改用户</el-button>
             <el-button type="primary" @click="showUserRoleTrans" size="small">调整角色</el-button>
-
             <el-button type="primary" @click="updateState" size="small">禁用用户</el-button>
 
         </div>
@@ -43,6 +41,8 @@
                 <el-table-column prop="username" label="用户名"></el-table-column>
                 <el-table-column prop="roles" :formatter="getRoleName" label="角色"></el-table-column>
                 <el-table-column prop="createdTime" label="注册时间"></el-table-column>
+                <el-table-column prop="state"   :formatter="showStateValue"   label="状态"></el-table-column>
+
             </el-table>
         </div>
         <div class="page">
@@ -157,6 +157,18 @@
                 }
                 if (cellVal.length > 0) {
                     return cellVal.substr(0, cellVal.length - 1);
+                }
+                return cellVal;
+            },
+            showStateValue(row){
+                let cellVal='';
+                if(row.state){
+                    if(row.state==0){
+                        cellVal="停用";
+                    }
+                    if(row.state==1){
+                        cellVal="正常";
+                    }
                 }
                 return cellVal;
             },
