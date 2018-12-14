@@ -11,18 +11,17 @@
                         <el-button icon="el-icon-search" slot="append" @click="search(1)"></el-button>
                     </el-input>
                 </el-form-item>
-                <el-form-item label="按注册日期查询">
-                    <el-date-picker type="daterange" clearable v-model="formData.searchTime" range-separator="至"
-                                    start-placeholde="起始日期" end-placeholde="结束日期"
-                                    :default-time="['00:00:00','23:59:59']" style="width:300px">
-                    </el-date-picker>
-                    <el-button icon="el-icon-search" @click="search(2)"></el-button>
-
-                </el-form-item>
             </el-form>
+            <el-button type="primary" @click="showAddForm" size="small">添加用户</el-button>
+            <el-button type="primary" @click="showUpdateForm" size="small">修改用户</el-button>
+            <el-button type="primary" @click="showUserRoleTrans" size="small">调整角色</el-button>
+
+            <el-button type="primary" @click="updateState" size="small">禁用用户</el-button>
+
         </div>
+
         <div class="container">
-            <el-table :data="users" stripe border>
+            <el-table :data="users" stripe border highlight-current-row @current-change="selectedRow">
                 <el-table-column type="expand">
                     <template slot-scope="props">
                         <el-form class="table-expand" label-position="left" inline>
@@ -34,7 +33,7 @@
                             </el-form-item>
                             <el-form-item label="角色">
                                 <ol>
-                                    <li v-for="(role,index) in props.row.roles">角色{{index+1}}：{{role.name}}</li>
+                                    <li v-for="(role,index) in props.row.roles">角色{{index + 1}}：{{role.name}}</li>
                                 </ol>
                             </el-form-item>
                         </el-form>
@@ -61,6 +60,7 @@
         data() {
             return {
                 page: {
+                    selected: "",//选中行
                     searchType: [
                         {
                             value: 1,
@@ -110,6 +110,44 @@
                     this.$message(JSON.stringify(this.formData.searchTime));
                 }
             },
+            //显示权限选择框
+            showUserRoleTrans() {
+                if (!this.page.selected) {
+                    this.$message.error("请选择一个用户")
+                    return;
+                }
+                this.page.roleRoutersData.showDialog = true;
+
+            },
+            //显示添加页面
+            showAddForm() {
+                this.page.roleAddFormData.showDialog = true;
+            },
+            //显示更新页面
+            showUpdateForm() {
+                if (!this.page.selected) {
+                    this.$message.error("请选择一个角色")
+                    return;
+                }
+                this.page.roleUpdateFormData.showDialog = true;
+
+            },
+            updateState() {
+                if (!this.page.selected) {
+                    this.$message.error("请选择一个用户")
+                    return;
+                }
+                let user = this.page.selected;
+                if (user.state = 0) {
+                    user.state = 1
+                } else if (user.state = 1) {
+                    user.state = 0;
+                }
+                axios.post(user_url.UPDATE_STATE,{userId:user.id,state:user.state}).then(function (data) {
+                    this.page.selected = user;
+                })
+            },
+            //角色信息处理
             getRoleName(row) {
                 let cellVal = '';
                 if (row.roles) {
@@ -121,6 +159,11 @@
                     return cellVal.substr(0, cellVal.length - 1);
                 }
                 return cellVal;
+            },
+            //选中行
+            selectedRow(currentRow) {
+                let vm = this;
+                vm.page.selected = currentRow;
             }
         }
     };
