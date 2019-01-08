@@ -48,9 +48,7 @@
         watch: {
             //监听role变化
             role: function (val) {
-                this.roleForm.id = val.id;
-                this.roleForm.name = val.name;
-                this.roleForm.description = val.description;
+               this.roleForm=val;
 
             }
         },

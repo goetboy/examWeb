@@ -41,7 +41,7 @@
                 <el-table-column prop="username" label="用户名"></el-table-column>
                 <el-table-column prop="roles" :formatter="getRoleName" label="角色"></el-table-column>
                 <el-table-column prop="createdTime" label="注册时间"></el-table-column>
-                <el-table-column prop="state"   :formatter="showStateValue"   label="状态"></el-table-column>
+                <el-table-column prop="state" :formatter="showStateValue" label="状态"></el-table-column>
 
             </el-table>
         </div>
@@ -143,7 +143,7 @@
                 } else if (user.state = 1) {
                     user.state = 0;
                 }
-                axios.post(user_url.UPDATE_STATE,{userId:user.id,state:user.state}).then(function (data) {
+                axios.post(user_url.UPDATE_STATE, {userId:user.id,state:user.state}).then(function (data) {
                     this.page.selected = user;
                 })
             },
@@ -160,14 +160,14 @@
                 }
                 return cellVal;
             },
-            showStateValue(row){
-                let cellVal='';
-                if(row.state){
-                    if(row.state==0){
-                        cellVal="停用";
+            showStateValue(row) {
+                let cellVal = '';
+                if (row.state) {
+                    if (row.state == 0) {
+                        cellVal = "停用";
                     }
-                    if(row.state==1){
-                        cellVal="正常";
+                    if (row.state == 1) {
+                        cellVal = "正常";
                     }
                 }
                 return cellVal;
