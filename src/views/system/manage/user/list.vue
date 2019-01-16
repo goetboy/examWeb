@@ -14,7 +14,8 @@
             </el-form>
             <el-button type="primary" @click="showUpdateForm" size="small">修改用户</el-button>
             <el-button type="primary" @click="showUserRoleTrans" size="small">调整角色</el-button>
-            <el-button type="primary" @click="updateState" size="small">禁用用户</el-button>
+            <el-button type="primary"  v-if="page.selected" @click="updateState" size="small"><span
+                    v-if="page.selected.state===1">禁用</span><span  v-else-if="page.selected.state===0">启用</span></el-button>
         </div>
 
         <div class="container">
@@ -68,13 +69,13 @@
         <el-dialog :visible.sync="page.userRolesUpdateFormData.showDialog" close-on-click-modal title="修改用户信息"
                    @closed="closeDialog(page.userRolesUpdateFormData)"
                    open="open">
-            <role-list
-                    @close-dialog="closeDialog(page.userUpdateFormData)"
-                    v-model="page.selected.roles" ref="updateFormDialog"></role-list>
+            <user-roles-update-form
+                    @close-dialog="closeDialog(page.userRolesUpdateFormData)"
+                    :user="page.selected" ref="userRolesUpdateFormDialog"></user-roles-update-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="page.userRolesUpdateFormData.showDialog = false">取 消</el-button>
                 <el-button type="primary"
-                           @click=" $refs.updateFormDialog.Submit();">确 定
+                           @click=" $refs.userRolesUpdateFormDialog.Submit();">确 定
                 </el-button>
             </div>
         </el-dialog>
@@ -84,10 +85,10 @@
 <script>
     import userApi from "../../../../constant/api/user"
     import UserUpdateForm from "../../../../components/system/manage/user/UserUpdateForm"
-    import RoleList from "../../../../components/system/manage/role/RoleList"
+    import UserRolesUpdateForm from "../../../../components/system/manage/user/UserRolesUpdateForm"
 
     export default {
-        components: {UserUpdateForm, RoleList},
+        components: {UserUpdateForm, UserRolesUpdateForm},
         data() {
             return {
                 page: {
@@ -212,16 +213,21 @@
 
             //销毁对话框内组件，隐藏对话框
             closeDialog(obj) {
+                let vm =this;
+
                 obj.hackReset = false;
                 obj.showDialog = false;
+               vm.initPage();
                 this.$nextTick(() => {
                     obj.hackReset = true
+
                 })
             },
             //选中行
             selectedRow(currentRow) {
                 let vm = this;
                 vm.page.selected = currentRow;
+
             }
         }
     };

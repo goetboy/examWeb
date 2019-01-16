@@ -3,7 +3,7 @@
         <!--控制区-->
         <!--角色列表展示-->
         <div class="container">
-            <el-table :data="roles" highlight-current-row @current-change="selectedRow" ref="roles">
+            <el-table :data="roles" highlight-current-row  @selection-change="selectedRow" ref="roles">
                 <el-table-column type="selection" width="55"></el-table-column>
                 <el-table-column prop="id" label="ID"></el-table-column>
                 <el-table-column prop="name" label="角色名" :show-overflow-tooltip="true"></el-table-column>
@@ -46,14 +46,8 @@
         created() {
             this.initPage();
         },
-        watch: {
-            value: function (val, old) {
-                if (!this.value) {
-                    return
-                }
-                this.userRoles = val;
-                this.selected();
-            }
+        updated() {
+            this.toggleSelection();
         },
         methods: {
             //初始化页面
@@ -62,37 +56,30 @@
                 axios.get(roleApi.LIST,
                 ).then(function (data) {
                     vm.roles = data;
+                    vm.userRoles = vm.value;
                 })
-                vm.userRoles = vm.value;
-                vm.selected();
-                console.log(vm.value)
+
             },
-            selected(){
-               // console.log(this.$refs.roles);
+            toggleSelection() {
+                let vm = this;
+                if (vm.roles) {
+                    vm.roles.forEach((role, index) => {
+                        if (vm.userRoles) {
+                            vm.userRoles.forEach(userRole => {
+                                if (userRole.id === role.id) {
+                                    vm.$refs.roles.toggleRowSelection(role);
+                                }
+                            })
+                        }
+                    })
+                }
             },
-            //提交数据
-            Submit: function () {
-                let self = this;
-                this.$refs.role.validate(valid => {
-                    if (valid) {
-                        axios.post(roleApi.UPDATE, {role: self.roleForm}).then(response => {
-                            self.$emit('close-dialog');
-                        })
-                    } else {
-                        self.$message({
-                            showClose: true,
-                            message: "输入信息不完整",
-                            type: "warning"
-                        });
-                        return false;
-                    }
-                });
-            },
+
             //选中行
             selectedRow(currentRow) {
-                let vm = this;
-                vm.page.selected = currentRow;
-            },
+console.log(currentRow);
+this.$emit("input",currentRow)
+                },
             //格式化日期
             formatDate(row, col) {
                 if (row.createdTime)

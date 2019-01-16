@@ -20,7 +20,7 @@ const router= new Router({
         path: '/',
         component: Main,
         meta: {requiresAuth: true},
-        redirect: '/userInformation',
+        redirect: '/user/list',
         children: [{
             path: 'userInformation',
             component: UserInformation,

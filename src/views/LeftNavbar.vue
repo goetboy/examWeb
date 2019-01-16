@@ -8,7 +8,7 @@
                 class="el-menu"
                 :router="true">
 
-            <el-submenu index="1">
+           <!-- <el-submenu index="1">
                 <template slot="title">
                     <i class="el-icon-location"></i>
                     <span>用户管理</span>
@@ -17,15 +17,16 @@
                     <template slot="title"></template>
                     <el-menu-item index="/user/list">查询用户</el-menu-item>
                 </el-menu-item-group>
-            </el-submenu>
+            </el-submenu>-->
 
             <el-submenu index="2">
                 <template slot="title">
                     <i class="el-icon-location"></i>
-                    <span>权限管理</span>
+                    <span>系统管理</span>
                 </template>
                 <el-menu-item-group>
                     <template slot="title"></template>
+                    <el-menu-item index="/user/list">查询用户</el-menu-item>
                     <el-menu-item index="/role/list">查询角色</el-menu-item>
                     <el-menu-item index="/menu/list">查询菜单</el-menu-item>
                 </el-menu-item-group>

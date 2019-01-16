@@ -9,4 +9,6 @@ export default {
     UPDATE: USER_URL + "/update",
     //更新用户状态
     UPDATE_STATE: USER_URL + "/update/state",
+    UPDATE_ROLE: USER_URL + "/update/role"
+
 }

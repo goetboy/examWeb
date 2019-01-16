@@ -28,7 +28,7 @@ _axios.interceptors.request.use(
     },
     function (error) {
         loadinginstace.close();
-        return Promise.reject(error);
+        return  Promise.reject(error);
     }
 );
 
@@ -71,14 +71,14 @@ _axios.interceptors.response.use(
             switch (response.status) {
                 //服务器异常
                 case 500:
-                    Promise.rejected(Message({
+                    Promise.reject(Message({
                         showClose: true,
                         message: '请求异常,请重试',
                         type: "error"
                     }))
                     break;
                 case 400:
-                    Promise.rejected(Message({
+                    Promise.reject(Message({
                         showClose: true,
                         message: '请求参数异常，请重试',
                         type: "error"
@@ -87,7 +87,7 @@ _axios.interceptors.response.use(
                     break;
                 //找不到接口
                 case 403:
-                    Promise.rejected(Message({
+                    Promise.reject(Message({
                         showClose: true,
                         message: response.data.message,
                         type: 'error'
