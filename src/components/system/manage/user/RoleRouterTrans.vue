@@ -8,7 +8,7 @@
     </div>
 </template>
 <script>
-    import router_url from "../../../constant/api/router"
+    import router_url from "../../../../constant/api/router"
 
     export default {
         data() {

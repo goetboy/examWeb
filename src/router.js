@@ -9,9 +9,9 @@ import Login from '@/views/auth/Login.vue'
 import Register from '@/views/auth/Register.vue'
 
 import Main from '@/views/Main.vue'
-import UserList from '@/views/userManage/list.vue'
-import RouterList from '@/views/roleManage/router/list.vue'
-import RoleList from '@/views/roleManage/role/list.vue'
+import UserList from '@/views/system/manage/user/list.vue'
+import MenuList from '@/views/system/manage/menu/list.vue'
+import RoleList from '@/views/system/manage/role/list.vue'
 import {getCookie} from './utils/cookie'
 Vue.use(Router)
 const router= new Router({
@@ -48,8 +48,8 @@ const router= new Router({
                 children: []
             },
             {
-                path: "/router/list",
-                component: RouterList,
+                path: "/menu/list",
+                component: MenuList,
 
                 children: []
             },

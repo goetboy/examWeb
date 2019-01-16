@@ -15,7 +15,6 @@
             <el-button type="primary" @click="showUpdateForm" size="small">修改用户</el-button>
             <el-button type="primary" @click="showUserRoleTrans" size="small">调整角色</el-button>
             <el-button type="primary" @click="updateState" size="small">禁用用户</el-button>
-
         </div>
 
         <div class="container">
@@ -31,7 +30,7 @@
                             </el-form-item>
                             <el-form-item label="角色">
                                 <ol>
-                                    <li v-for="(role,index) in props.row.roles">角色{{index + 1}}：{{role.name}}</li>
+                                    <li v-for="(role,index) in props.row.roles">{{role.name}}</li>
                                 </ol>
                             </el-form-item>
                         </el-form>
@@ -50,17 +49,58 @@
                            :page-sizes="[10,20,30,50,100]" :page-size="20" :total="50">
             </el-pagination>
         </div>
+        <!--弹窗区-->
+        <el-dialog :visible.sync="page.userUpdateFormData.showDialog" close-on-click-modal title="修改用户信息"
+                   @closed="closeDialog(page.userUpdateFormData)"
+                   open="open">
+            <user-update-form :user="page.selected" ref="updateFormDialog"
+                              @close-dialog="closeDialog(page.userUpdateFormData)"
+                              v-if=" page.userUpdateFormData.hackReset"
+            ></user-update-form>
+
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="page.userUpdateFormData.showDialog = false">取 消</el-button>
+                <el-button type="primary"
+                           @click=" $refs.updateFormDialog.Submit();">确 定
+                </el-button>
+            </div>
+        </el-dialog>
+        <el-dialog :visible.sync="page.userRolesUpdateFormData.showDialog" close-on-click-modal title="修改用户信息"
+                   @closed="closeDialog(page.userRolesUpdateFormData)"
+                   open="open">
+            <role-list
+                    @close-dialog="closeDialog(page.userUpdateFormData)"
+                    v-model="page.selected.roles" ref="updateFormDialog"></role-list>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="page.userRolesUpdateFormData.showDialog = false">取 消</el-button>
+                <el-button type="primary"
+                           @click=" $refs.updateFormDialog.Submit();">确 定
+                </el-button>
+            </div>
+        </el-dialog>
+
     </div>
 </template>
 <script>
-    import user_url from "@/constant/api/user"
+    import userApi from "../../../../constant/api/user"
+    import UserUpdateForm from "../../../../components/system/manage/user/UserUpdateForm"
+    import RoleList from "../../../../components/system/manage/role/RoleList"
 
     export default {
-
+        components: {UserUpdateForm, RoleList},
         data() {
             return {
                 page: {
                     selected: "",//选中行
+                    //修改用户
+                    userUpdateFormData: {
+                        showDialog: false,
+                        hackReset: true
+                    },//修改用户
+                    userRolesUpdateFormData: {
+                        showDialog: false,
+                        hackReset: true
+                    },
                     searchType: [
                         {
                             value: 1,
@@ -97,7 +137,7 @@
         methods: {
             initPage() {
                 let vm = this;
-                axios.get(user_url.LIST).then(function (data) {
+                axios.get(userApi.LIST).then(function (data) {
                     console.log(data)
                     vm.users = data;
                 })
@@ -116,35 +156,33 @@
                     this.$message.error("请选择一个用户")
                     return;
                 }
-                this.page.roleRoutersData.showDialog = true;
+                this.page.userRolesUpdateFormData.showDialog = true;
 
             },
-            //显示添加页面
-            showAddForm() {
-                this.page.roleAddFormData.showDialog = true;
-            },
+
             //显示更新页面
             showUpdateForm() {
                 if (!this.page.selected) {
-                    this.$message.error("请选择一个角色")
+                    this.$message.error("请选择一个用户")
                     return;
                 }
-                this.page.roleUpdateFormData.showDialog = true;
+                this.page.userUpdateFormData.showDialog = true;
 
             },
             updateState() {
+                let vm = this;
                 if (!this.page.selected) {
                     this.$message.error("请选择一个用户")
                     return;
                 }
                 let user = this.page.selected;
-                if (user.state = 0) {
+                if (user.state === 0) {
                     user.state = 1
-                } else if (user.state = 1) {
+                } else if (user.state === 1) {
                     user.state = 0;
                 }
-                axios.post(user_url.UPDATE_STATE, {userId:user.id,state:user.state}).then(function (data) {
-                    this.page.selected = user;
+                axios.post(userApi.UPDATE_STATE, {userId: user.id, state: user.state}).then(function (data) {
+                    vm.page.selected = user;
                 })
             },
             //角色信息处理
@@ -160,17 +198,25 @@
                 }
                 return cellVal;
             },
+            //状态格式化
             showStateValue(row) {
                 let cellVal = '';
-                if (row.state) {
-                    if (row.state == 0) {
-                        cellVal = "停用";
-                    }
-                    if (row.state == 1) {
-                        cellVal = "正常";
-                    }
+                if (row.state === 0) {
+                    cellVal = "停用";
+                }
+                if (row.state === 1) {
+                    cellVal = "正常";
                 }
                 return cellVal;
+            },
+
+            //销毁对话框内组件，隐藏对话框
+            closeDialog(obj) {
+                obj.hackReset = false;
+                obj.showDialog = false;
+                this.$nextTick(() => {
+                    obj.hackReset = true
+                })
             },
             //选中行
             selectedRow(currentRow) {

@@ -27,7 +27,7 @@
                 <el-menu-item-group>
                     <template slot="title"></template>
                     <el-menu-item index="/role/list">查询角色</el-menu-item>
-                    <el-menu-item index="/router/list">查询权限</el-menu-item>
+                    <el-menu-item index="/menu/list">查询菜单</el-menu-item>
                 </el-menu-item-group>
             </el-submenu>
 
