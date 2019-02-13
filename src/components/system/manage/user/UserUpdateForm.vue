@@ -45,7 +45,7 @@
                 userForm: {
                     address: this.user.address,
                     email: this.user.email,
-                    name: this.user.name,
+                    name: this.user.username,
                     nickName: this.user.nickName,
                     password: this.user.password,
                     phone: this.user.phone,
@@ -55,8 +55,8 @@
                 },
                 //输入检测
                 userFormRules: {
-                    name: [
-                        {required: true, message: "请输入角色名", trigger: "blur"}
+                    nickName: [
+                                                {max:30,message:"昵称最大长度30位",trigger:"blur"}
                     ],
                     email: [],
                     phone: [{max: 11, message: "最大长度11位", trigger: "blur"},

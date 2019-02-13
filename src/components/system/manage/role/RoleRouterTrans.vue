@@ -32,7 +32,7 @@
             init() {
                 let vm = this
                 if (vm.role) {
-                    axios.get(router_url.userManagerPermissionGetAllRouters).then(function (data) {
+                    axios.get(menuApi.LIST).then(function (data) {
                         vm.routers = data
 
                     })

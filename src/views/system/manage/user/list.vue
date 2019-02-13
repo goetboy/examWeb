@@ -12,10 +12,11 @@
                     </el-input>
                 </el-form-item>
             </el-form>
-            <el-button type="primary" @click="showUpdateForm" size="small">修改用户</el-button>
+            <el-button type="primary" @click="showUpdateForm" size="small" >修改用户</el-button>
             <el-button type="primary" @click="showUserRoleTrans" size="small">调整角色</el-button>
-            <el-button type="primary"  v-if="page.selected" @click="updateState" size="small"><span
-                    v-if="page.selected.state===1">禁用</span><span  v-else-if="page.selected.state===0">启用</span></el-button>
+            <el-button type="primary" v-if="page.selected" @click="updateState" size="small"><span
+                    v-if="page.selected.state===1">禁用</span><span v-else-if="page.selected.state===0">启用</span>
+            </el-button>
         </div>
 
         <div class="container">
@@ -39,24 +40,31 @@
                 </el-table-column>
                 <el-table-column prop="id" label="ID"></el-table-column>
                 <el-table-column prop="username" label="用户名"></el-table-column>
-                <el-table-column prop="roles" :formatter="getRoleName" label="角色"></el-table-column>
-                <el-table-column prop="createdTime" label="注册时间"></el-table-column>
+                <el-table-column prop="roles" :formatter="getRoleName"  :show-overflow-tooltip="true" label="角色"></el-table-column>
+                <el-table-column prop="createdTime" label="注册时间" :show-overflow-tooltip="true"></el-table-column>
                 <el-table-column prop="state" :formatter="showStateValue" label="状态"></el-table-column>
 
             </el-table>
         </div>
-        <div class="page">
-            <el-pagination layout="total,sizes,prev,pager,next,jumper" :background="true" :pager-count="7"
-                           :page-sizes="[10,20,30,50,100]" :page-size="20" :total="50">
-            </el-pagination>
+        <div id="page">
+            <!-- :pager-count="7" -->
+            <el-pagination
+                    layout="total,sizes,prev,pager,next,jumper"
+                    :background="true"
+                    :page-sizes="[10,20,30,50,100]"
+                    :page-size="20"
+                    :total="pages.total"
+                    @size-change="sizeChange"
+                    @current-change="currentChange"
+            ></el-pagination>
         </div>
         <!--弹窗区-->
         <el-dialog :visible.sync="page.userUpdateFormData.showDialog" close-on-click-modal title="修改用户信息"
-                   @closed="closeDialog(page.userUpdateFormData)"
+                   v-if="page.userUpdateFormData.showDialog"
+                   @closed="page.userUpdateFormData.showDialog=false"
                    open="open">
             <user-update-form :user="page.selected" ref="updateFormDialog"
-                              @close-dialog="closeDialog(page.userUpdateFormData)"
-                              v-if=" page.userUpdateFormData.hackReset"
+                              @close-dialog="page.userUpdateFormData.showDialog=false"
             ></user-update-form>
 
             <div slot="footer" class="dialog-footer">
@@ -66,12 +74,14 @@
                 </el-button>
             </div>
         </el-dialog>
-        <el-dialog :visible.sync="page.userRolesUpdateFormData.showDialog" close-on-click-modal title="修改用户信息"
-                   @closed="closeDialog(page.userRolesUpdateFormData)"
+        <el-dialog :visible.sync="page.userRolesUpdateFormData.showDialog" close-on-click-modal title="修改用户角色信息"
+                   v-if="page.userRolesUpdateFormData.showDialog"
+                   @closed="page.userRolesUpdateFormData.showDialog=false"
                    open="open">
             <user-roles-update-form
-                    @close-dialog="closeDialog(page.userRolesUpdateFormData)"
-                    :user="page.selected" ref="userRolesUpdateFormDialog"></user-roles-update-form>
+                    @close-dialog="page.userRolesUpdateFormData.showDialog=false"
+                    :user="page.selected"
+                    ref="userRolesUpdateFormDialog"></user-roles-update-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="page.userRolesUpdateFormData.showDialog = false">取 消</el-button>
                 <el-button type="primary"
@@ -124,9 +134,12 @@
                 formData: {
                     searchType: "",
                     search: "",
-                    searchTime: []
+                    searchTime: [],
+                    currentPage: 1,
+                    pageSize: 20,
                 },
-                users: []
+                users: [],
+                pages: {}//分页信息
             };
         },
         created() {
@@ -138,9 +151,15 @@
         methods: {
             initPage() {
                 let vm = this;
-                axios.get(userApi.LIST).then(function (data) {
+                axios.get(userApi.LIST, {
+                    params: {
+                        current: vm.formData.currentPage,
+                        size: vm.formData.pageSize
+                    }
+                }).then(function (data) {
                     console.log(data)
-                    vm.users = data;
+                    vm.users = data.records;
+                    vm.pages = data;
                 })
             },
             //直接查询
@@ -210,19 +229,17 @@
                 }
                 return cellVal;
             },
-
-            //销毁对话框内组件，隐藏对话框
-            closeDialog(obj) {
-                let vm =this;
-
-                obj.hackReset = false;
-                obj.showDialog = false;
-               vm.initPage();
-                this.$nextTick(() => {
-                    obj.hackReset = true
-
-                })
+            sizeChange(val) {
+                let vm = this;
+                vm.formData.pageSize = val;
+                vm.initPage();
             },
+            currentChange(val) {
+                let vm = this;
+                vm.formData.currentPage = val;
+                vm.initPage();
+            },
+
             //选中行
             selectedRow(currentRow) {
                 let vm = this;
