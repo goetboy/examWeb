@@ -12,7 +12,7 @@
                     </el-input>
                 </el-form-item>
             </el-form>
-            <el-button type="primary" @click="showUpdateForm" size="small" >修改用户</el-button>
+            <el-button type="primary" @click="showUpdateForm" size="small">修改用户</el-button>
             <el-button type="primary" @click="showUserRoleTrans" size="small">调整角色</el-button>
             <el-button type="primary" v-if="page.selected" @click="updateState" size="small"><span
                     v-if="page.selected.state===1">禁用</span><span v-else-if="page.selected.state===0">启用</span>
@@ -40,56 +40,51 @@
                 </el-table-column>
                 <el-table-column prop="id" label="ID"></el-table-column>
                 <el-table-column prop="username" label="用户名"></el-table-column>
-                <el-table-column prop="roles" :formatter="getRoleName"  :show-overflow-tooltip="true" label="角色"></el-table-column>
-                <el-table-column prop="createdTime" label="注册时间" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column prop="roles" :formatter="getRoleName" label="角色"></el-table-column>
+                <el-table-column prop="createdTime" label="注册时间"></el-table-column>
                 <el-table-column prop="state" :formatter="showStateValue" label="状态"></el-table-column>
-
             </el-table>
         </div>
-        <div id="page">
-            <!-- :pager-count="7" -->
-            <el-pagination
-                    layout="total,sizes,prev,pager,next,jumper"
-                    :background="true"
-                    :page-sizes="[10,20,30,50,100]"
-                    :page-size="20"
-                    :total="pages.total"
-                    @size-change="sizeChange"
-                    @current-change="currentChange"
-            ></el-pagination>
-        </div>
+
         <!--弹窗区-->
-        <el-dialog :visible.sync="page.userUpdateFormData.showDialog" close-on-click-modal title="修改用户信息"
-                   v-if="page.userUpdateFormData.showDialog"
-                   @closed="page.userUpdateFormData.showDialog=false"
-                   open="open">
-            <user-update-form :user="page.selected" ref="updateFormDialog"
-                              @close-dialog="page.userUpdateFormData.showDialog=false"
-            ></user-update-form>
-
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="page.userUpdateFormData.showDialog = false">取 消</el-button>
-                <el-button type="primary"
-                           @click=" $refs.updateFormDialog.Submit();">确 定
-                </el-button>
-            </div>
-        </el-dialog>
-        <el-dialog :visible.sync="page.userRolesUpdateFormData.showDialog" close-on-click-modal title="修改用户角色信息"
-                   v-if="page.userRolesUpdateFormData.showDialog"
-                   @closed="page.userRolesUpdateFormData.showDialog=false"
-                   open="open">
-            <user-roles-update-form
-                    @close-dialog="page.userRolesUpdateFormData.showDialog=false"
-                    :user="page.selected"
-                    ref="userRolesUpdateFormDialog"></user-roles-update-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="page.userRolesUpdateFormData.showDialog = false">取 消</el-button>
-                <el-button type="primary"
-                           @click=" $refs.userRolesUpdateFormDialog.Submit();">确 定
-                </el-button>
-            </div>
-        </el-dialog>
-
+        <div id="dialog">
+            <el-dialog
+                    :visible.sync="page.userUpdateFormData.showDialog" close-on-click-modal title="修改用户信息":center="true"
+                    v-if="page.userUpdateFormData.showDialog"
+                    open="open">
+                <user-update-form :user="page.selected" ref="updateFormDialog"
+                                  @close-dialog="page.userUpdateFormData.showDialog=false"
+                                  v-if=" page.userUpdateFormData.hackReset"
+                ></user-update-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="page.userUpdateFormData.showDialog = false">取 消</el-button>
+                    <el-button type="primary"
+                               @click=" $refs.updateFormDialog.Submit();">确 定
+                    </el-button>
+                </div>
+            </el-dialog>
+            <el-dialog  :visible.sync="page.userRolesUpdateFormData.showDialog" close-on-click-modal title="修改用户角色" :center="true"
+                        v-if="page.userRolesUpdateFormData.showDialog"
+                        open="open">
+                <user-roles-update-form
+                        @close-dialog="page.userRolesUpdateFormData.showDialog=false"
+                        :user="page.selected" ref="userRolesUpdateFormDialog"></user-roles-update-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="page.userRolesUpdateFormData.showDialog = false">取 消</el-button>
+                    <el-button type="primary"
+                               @click=" $refs.userRolesUpdateFormDialog.Submit();">确 定
+                    </el-button>
+                </div>
+            </el-dialog>
+        </div>
+        <!--分页-->
+        <div id="page" class="page">
+            <el-pagination layout="total,sizes,prev,pager,next,jumper" :background="true" :pager-count="7"
+                           :page-sizes="[10,20,30,50,100]"  :total="page.total"
+                           @size-change="sizeChange"
+                           @current-change="currentChange">
+            </el-pagination>
+        </div>
     </div>
 </template>
 <script>
@@ -103,6 +98,7 @@
             return {
                 page: {
                     selected: "",//选中行
+                    total: 0,
                     //修改用户
                     userUpdateFormData: {
                         showDialog: false,
@@ -115,11 +111,11 @@
                     searchType: [
                         {
                             value: 1,
-                            text: "ID"
+                            text: "用户名"
                         },
                         {
                             value: 2,
-                            text: "用户名"
+                            text: "昵称"
                         },
                         {
                             value: 3,
@@ -132,14 +128,13 @@
                     ]
                 },
                 formData: {
-                    searchType: "",
-                    search: "",
-                    searchTime: [],
-                    currentPage: 1,
-                    pageSize: 20,
+
+                    current: 1,
+                    size: 20
+
+
                 },
                 users: [],
-                pages: {}//分页信息
             };
         },
         created() {
@@ -151,29 +146,17 @@
         methods: {
             initPage() {
                 let vm = this;
-                axios.get(userApi.LIST, {
-                    params: {
-                        current: vm.formData.currentPage,
-                        size: vm.formData.pageSize
-                    }
-                }).then(function (data) {
-                    console.log(data)
+                axios.get(userApi.LIST, {params: this.formData}).then(function (data) {
+                    console.log(data);
                     vm.users = data.records;
-                    vm.pages = data;
+                    vm.page.total = data.total;
                 })
             },
-            //直接查询
-            search(type) {
-                if (type == 1) {
 
-                } else if (type == 2) {
-                    this.$message(JSON.stringify(this.formData.searchTime));
-                }
-            },
             //显示权限选择框
             showUserRoleTrans() {
                 if (!this.page.selected) {
-                    this.$message.error("请选择一个用户")
+                    this.$message.error("请选择一个用户");
                     return;
                 }
                 this.page.userRolesUpdateFormData.showDialog = true;
@@ -183,7 +166,7 @@
             //显示更新页面
             showUpdateForm() {
                 if (!this.page.selected) {
-                    this.$message.error("请选择一个用户")
+                    this.$message.error("请选择一个用户");
                     return;
                 }
                 this.page.userUpdateFormData.showDialog = true;
@@ -192,7 +175,7 @@
             updateState() {
                 let vm = this;
                 if (!this.page.selected) {
-                    this.$message.error("请选择一个用户")
+                    this.$message.error("请选择一个用户");
                     return;
                 }
                 let user = this.page.selected;
@@ -229,17 +212,18 @@
                 }
                 return cellVal;
             },
+            //调整分页大小
             sizeChange(val) {
                 let vm = this;
-                vm.formData.pageSize = val;
+                vm.formData.size = val;
                 vm.initPage();
             },
+            //调整当前页
             currentChange(val) {
                 let vm = this;
-                vm.formData.currentPage = val;
+                vm.formData.current = val;
                 vm.initPage();
             },
-
             //选中行
             selectedRow(currentRow) {
                 let vm = this;

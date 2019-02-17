@@ -10,6 +10,8 @@ export default {
     SAVE: MENU_URL + "/save",
     //更新菜单信息
     UPDATE: MENU_URL + "/update",
+    //删除菜单
+    DELETE: MENU_URL + "/delete",
     //更新菜单状态
     UPDATE_STATE: MENU_URL + "/update/state",
 }

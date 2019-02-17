@@ -3,7 +3,7 @@
     <div>
         <el-form ref="user" :model="userForm" label-width="80px" :rules="userFormRules" :label-position="'right'">
             <el-form-item label="用户名:">
-                {{userForm.name}}
+                {{userForm.username}}
             </el-form-item>
             <el-form-item label="昵称:" prop="nickName">
                 <el-input type="text" v-model="userForm.nickName" placeholder="昵称"
@@ -45,7 +45,8 @@
                 userForm: {
                     address: this.user.address,
                     email: this.user.email,
-                    name: this.user.username,
+                    username: this.user.username,
+                    name: this.user.name,
                     nickName: this.user.nickName,
                     password: this.user.password,
                     phone: this.user.phone,
@@ -55,8 +56,8 @@
                 },
                 //输入检测
                 userFormRules: {
-                    nickName: [
-                                                {max:30,message:"昵称最大长度30位",trigger:"blur"}
+                    name: [
+                        {required: true, message: "请输入角色名", trigger: "blur"}
                     ],
                     email: [],
                     phone: [{max: 11, message: "最大长度11位", trigger: "blur"},
@@ -79,7 +80,7 @@
                 let self = this;
                 this.$refs.user.validate(valid => {
                     if (valid) {
-                    //    let param = "";
+                        //    let param = "";
                         axios.post(userApi.UPDATE, {user:this.userForm}).then(response => {
                             this.$message({
                                 type: "info",
@@ -88,7 +89,7 @@
                             })
                             self.$emit('close-dialog');
                         }).catch(function () {
-                           // self.$emit('close-dialog');
+                            // self.$emit('close-dialog');
                         })
                     } else {
                         self.$message({

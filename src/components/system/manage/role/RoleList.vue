@@ -16,9 +16,12 @@
                 ></el-table-column>
             </el-table>
         </div>
-        <div class="page">
-            <el-pagination layout="total,sizes,prev,pager,next,jumper" background :page-sizes="[10,20,30,50,100]"
-                           :page-size="20" :total="50">
+        <!--分页-->
+        <div id="page" class="page">
+            <el-pagination layout="total,sizes,prev,pager,next,jumper" :background="true" :pager-count="7"
+                           :page-sizes="[10,20,30,50,100]"  :total="page.total"
+                           @size-change="sizeChange"
+                           @current-change="currentChange">
             </el-pagination>
         </div>
     </div>
@@ -41,6 +44,11 @@
                 //角色列表
                 roles: [],
                 userRoles: [],
+                formData: {
+                    current: 1,
+                    size: 20
+
+                },
             };
         },
         created() {
@@ -53,9 +61,9 @@
             //初始化页面
             initPage() {
                 var vm = this;
-                axios.get(roleApi.LIST,
+                axios.get(roleApi.LIST,{params:this.formData}
                 ).then(function (data) {
-                    vm.roles = data;
+                    vm.roles = data.records;
                     vm.userRoles = vm.value;
                 })
 
@@ -95,7 +103,18 @@ this.$emit("input",currentRow)
                 }
                 return cellVal;
             },
-
+            //调整分页大小
+            sizeChange(val) {
+                let vm = this;
+                vm.formData.size = val;
+                vm.initPage();
+            },
+            //调整当前页
+            currentChange(val) {
+                let vm = this;
+                vm.formData.current = val;
+                vm.initPage();
+            },
         }
     };
 </script>

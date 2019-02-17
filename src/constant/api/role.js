@@ -11,5 +11,7 @@ export default {
     UPDATE: ROLE_URL + "/update",
     //更新角色状态
     UPDATE_STATE: ROLE_URL + "/update/state",
+    //删除角色
+    DELETE: ROLE_URL + "/delete",
 
 }
