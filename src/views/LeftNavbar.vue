@@ -14,14 +14,17 @@
                 </template>
                 <el-menu-item-group>
                     <template slot="title"></template>
-                    <el-menu-item index="#">试卷管理</el-menu-item>
+                    <el-menu-item index="/exam/list">考试管理</el-menu-item>
+                    <el-menu-item index="/examinee/list">考生管理</el-menu-item>
+                    <el-menu-item index="/paper/list">试卷管理</el-menu-item>
+                    <el-menu-item index="/question/list">考生管理</el-menu-item>
                 </el-menu-item-group>
             </el-submenu>
 
             <el-submenu index="2">
                 <template slot="title">
                     <i class="el-icon-location"></i>
-                    <span>系统管理</span>
+                    <span>系统设置</span>
                 </template>
                 <el-menu-item-group>
                     <template slot="title"></template>

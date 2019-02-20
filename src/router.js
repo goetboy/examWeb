@@ -12,9 +12,11 @@ import Main from '@/views/Main.vue'
 import UserList from '@/views/system/manage/user/list.vue'
 import MenuList from '@/views/system/manage/menu/list.vue'
 import RoleList from '@/views/system/manage/role/list.vue'
+import ExamList from '@/views/exam/list.vue'
 import {getCookie} from './utils/cookie'
+
 Vue.use(Router)
-const router= new Router({
+const router = new Router({
     mode: 'history',
     routes: [{
         path: '/',
@@ -59,6 +61,11 @@ const router= new Router({
                 component: RoleList,
                 children: []
             },
+            {
+                path: '/exam/list',
+                component: ExamList,
+                children: []
+            }
         ]
     },
 
@@ -75,20 +82,20 @@ const router= new Router({
 
 
 const SESSION_ID = "token";
-router.beforeEach((to,from,next)=>{
- if(to.matched.some(record=>record.meta.requiresAuth)){
-        if(getCookie(SESSION_ID))
+router.beforeEach((to, from, next) => {
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+        if (getCookie(SESSION_ID))
             next()
         else
             next({
-                path:"/login",
-                query:{
-                    redirect:to.fullPath
+                path: "/login",
+                query: {
+                    redirect: to.fullPath
                 }
             })
-    }else {
+    } else {
         next();
     }
-next();
+    next();
 })
 export default router;

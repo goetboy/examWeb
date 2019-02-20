@@ -34,15 +34,14 @@
         methods: {
             //提交数据
             Submit: function () {
-                let self = this;
-                console.log(this.userForm)
+                let vm = this;
                axios.post(userApi.UPDATE_ROLE, {userId:this.userForm.userId,roles:this.userForm.roles}).then(response => {
                     this.$message({
                         type: "info",
                         message: "修改成功",
                         showClose: true
                     })
-                    self.$emit('close-dialog');
+                    vm.$emit('close-dialog');
                 })
             },
         }
